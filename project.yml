@@ -2,7 +2,7 @@ name: iPadTaskManager
 options:
   bundleIdPrefix: com.example
   deploymentTarget:
-    iOS: "16.0"
+    iOS: "17.0"
   developmentLanguage: zh-Hans
 
 targets:
@@ -27,3 +27,39 @@ targets:
         INFOPLIST_KEY_UILaunchScreen_Generation: YES
         INFOPLIST_KEY_UISupportedInterfaceOrientations: "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown"
         SWIFT_VERSION: "5.0"
+    dependencies:
+      - framework: FamilyControls.framework
+        embed: false
+      - framework: DeviceActivity.framework
+        embed: false
+      - framework: ManagedSettings.framework
+        embed: false
+
+  iPadTaskManagerTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: iPadTaskManagerTests
+        excludes:
+          - "**/.DS_Store"
+    dependencies:
+      - target: iPadTaskManager
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        BUNDLE_LOADER: "$(TEST_HOST)"
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/iPadTaskManager.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/iPadTaskManager"
+
+  iPadTaskManagerUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - path: iPadTaskManagerUITests
+        excludes:
+          - "**/.DS_Store"
+    dependencies:
+      - target: iPadTaskManager
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_TARGET_NAME: iPadTaskManager

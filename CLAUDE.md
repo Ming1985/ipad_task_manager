@@ -11,7 +11,7 @@
 ## 技术栈
 
 - **语言/框架:** Swift, SwiftUI, Combine
-- **最低版本:** iPadOS 16.0
+- **最低版本:** iPadOS 17.0
 - **数据持久化:** SwiftData 或 Core Data
 - **核心依赖:**
   - FamilyControls（App 屏蔽）

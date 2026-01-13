@@ -8,7 +8,7 @@
 
 | Phase | 标题 | 类型 | 状态 |
 |-------|------|------|------|
-| 01 | 基础架构 | infrastructure | pending |
+| 01 | 基础架构 | infrastructure | completed |
 | 02 | 管理员认证 | ui | pending |
 | 03 | 任务管理 | ui | pending |
 | 04 | 孩子主界面 | ui | pending |
@@ -27,9 +27,9 @@
 ## 进度统计
 
 - 总 Phases: 15
-- 已完成: 0
+- 已完成: 1
 - 进行中: 0
-- 待开始: 15
+- 待开始: 14
 
 ---
 
