@@ -1,0 +1,29 @@
+name: iPadTaskManager
+options:
+  bundleIdPrefix: com.example
+  deploymentTarget:
+    iOS: "16.0"
+  developmentLanguage: zh-Hans
+
+targets:
+  iPadTaskManager:
+    type: application
+    platform: iOS
+    sources:
+      - path: iPadTaskManager
+        excludes:
+          - "**/.DS_Store"
+    settings:
+      base:
+        INFOPLIST_FILE: iPadTaskManager/Info.plist
+        CODE_SIGN_ENTITLEMENTS: iPadTaskManager/iPadTaskManager.entitlements
+        PRODUCT_BUNDLE_IDENTIFIER: com.example.iPadTaskManager
+        MARKETING_VERSION: "1.0"
+        CURRENT_PROJECT_VERSION: 1
+        TARGETED_DEVICE_FAMILY: 2
+        SUPPORTS_MACCATALYST: NO
+        INFOPLIST_KEY_CFBundleDisplayName: "任务管理"
+        INFOPLIST_KEY_LSApplicationCategoryType: "public.app-category.education"
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_UISupportedInterfaceOrientations: "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown"
+        SWIFT_VERSION: "5.0"
