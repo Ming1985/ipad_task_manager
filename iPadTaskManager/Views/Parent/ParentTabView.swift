@@ -97,12 +97,15 @@ struct ParentStatsView: View {
 
 struct ParentSettingsView: View {
     @EnvironmentObject private var appState: AppState
+    @State private var showChangePassword = false
 
     var body: some View {
         NavigationStack {
             List {
                 Section("账户") {
-                    Button("修改密码") { }
+                    Button("修改密码") {
+                        showChangePassword = true
+                    }
                 }
 
                 Section("数据") {
@@ -117,6 +120,9 @@ struct ParentSettingsView: View {
                 }
             }
             .navigationTitle("设置")
+            .sheet(isPresented: $showChangePassword) {
+                ChangePasswordView()
+            }
         }
     }
 }

@@ -4,12 +4,16 @@
 
 基于 PRD 规划的开发路线图，共 15 个 Phase。
 
+## Active Phase
+
+**Phase 03: 任务管理**
+
 ## Phases
 
 | Phase | 标题 | 类型 | 状态 |
 |-------|------|------|------|
-| 01 | 基础架构 | infrastructure | completed |
-| 02 | 管理员认证 | ui | pending |
+| 01 | 基础架构 | infrastructure | ✅ completed |
+| 02 | 管理员认证 | ui | ✅ completed |
 | 03 | 任务管理 | ui | pending |
 | 04 | 孩子主界面 | ui | pending |
 | 05 | 任务执行 | ui | pending |
@@ -27,11 +31,11 @@
 ## 进度统计
 
 - 总 Phases: 15
-- 已完成: 1
+- 已完成: 2
 - 进行中: 0
-- 待开始: 14
+- 待开始: 13
 
 ---
 
-*生成时间: 2026-01-13*
+*更新时间: 2026-01-13*
 *PRD 来源: tasks/prd-ipad-task-manager.md*
