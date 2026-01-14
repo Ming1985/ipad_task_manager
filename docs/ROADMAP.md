@@ -6,7 +6,7 @@
 
 ## Active Phase
 
-**Phase 04: 孩子主界面**
+**Phase 05: 任务执行**
 
 ## Phases
 
@@ -15,7 +15,7 @@
 | 01 | 基础架构 | infrastructure | ✅ completed |
 | 02 | 管理员认证 | ui | ✅ completed |
 | 03 | 任务管理 | ui | ✅ completed |
-| 04 | 孩子主界面 | ui | pending |
+| 04 | 孩子主界面 | ui | ✅ completed |
 | 05 | 任务执行 | ui | pending |
 | 06 | Screen Time 集成 | system-api | pending |
 | 07 | 任务跟踪 | system-api | pending |
@@ -31,9 +31,9 @@
 ## 进度统计
 
 - 总 Phases: 15
-- 已完成: 3
+- 已完成: 4
 - 进行中: 0
-- 待开始: 12
+- 待开始: 11
 
 ---
 
