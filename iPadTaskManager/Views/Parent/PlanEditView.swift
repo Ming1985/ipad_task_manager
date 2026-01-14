@@ -75,12 +75,13 @@ struct PlanEditView: View {
                             Label("添加任务", systemImage: "plus.circle")
                         }
                     } else {
-                        ForEach(selectedTasks) { task in
+                        ForEach(selectedTasks.indices, id: \.self) { index in
+                            let task = selectedTasks[index]
                             TaskRowWithDuration(
                                 task: task,
                                 duration: effectiveDuration(for: task),
                                 onAdjust: { adjustDuration(task, by: $0) },
-                                onRemove: { removeTask(task) }
+                                onRemove: { removeTask(at: index) }
                             )
                         }
                         .onMove(perform: moveTasks)
@@ -159,9 +160,9 @@ struct PlanEditView: View {
         return max(0, components.minute ?? 0)
     }
 
-    private func removeTask(_ task: TaskItem) {
-        selectedTasks.removeAll { $0.id == task.id }
-        durationOverrides.removeValue(forKey: task.taskId.uuidString)
+    private func removeTask(at index: Int) {
+        guard index < selectedTasks.count else { return }
+        selectedTasks.remove(at: index)
     }
 
     private func moveTasks(from source: IndexSet, to destination: Int) {
@@ -369,7 +370,6 @@ private struct TaskPickerView: View {
     }
 
     private func addTask(_ task: TaskItem) {
-        // 允许重复添加同一任务
         selectedTasks.append(task)
     }
 
