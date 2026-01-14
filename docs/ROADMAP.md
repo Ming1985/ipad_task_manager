@@ -6,7 +6,7 @@
 
 ## Active Phase
 
-**Phase 05: 任务执行**
+**Phase 06: Screen Time 集成**
 
 ## Phases
 
@@ -16,7 +16,7 @@
 | 02 | 管理员认证 | ui | ✅ completed |
 | 03 | 任务管理 | ui | ✅ completed |
 | 04 | 孩子主界面 | ui | ✅ completed |
-| 05 | 任务执行 | ui | pending |
+| 05 | 任务执行 | ui | ✅ completed |
 | 06 | Screen Time 集成 | system-api | pending |
 | 07 | 任务跟踪 | system-api | pending |
 | 08 | 截图功能 | ui | pending |
@@ -31,9 +31,9 @@
 ## 进度统计
 
 - 总 Phases: 15
-- 已完成: 4
+- 已完成: 5
 - 进行中: 0
-- 待开始: 11
+- 待开始: 10
 
 ---
 

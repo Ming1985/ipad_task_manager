@@ -32,7 +32,6 @@ struct ChildTabView: View {
 // MARK: - 子视图
 
 struct ChildTaskListView: View {
-    @Environment(\.modelContext) private var modelContext
     @Query private var settingsArray: [AppSettings]
     @Query private var plans: [TaskPlan]
 
@@ -150,6 +149,7 @@ struct ChildEmptyStateView: View {
 /// 计划卡片
 struct ChildPlanCard: View {
     let plan: TaskPlan
+    @State private var showExecution = false
 
     private var timeRangeText: String? {
         guard plan.isFixedMode,
@@ -203,7 +203,7 @@ struct ChildPlanCard: View {
 
             // 开始按钮
             Button {
-                // TODO: Phase 05 实现任务执行
+                showExecution = true
             } label: {
                 HStack {
                     Image(systemName: "play.fill")
@@ -217,6 +217,7 @@ struct ChildPlanCard: View {
                 .foregroundStyle(.white)
                 .clipShape(RoundedRectangle(cornerRadius: 12))
             }
+            .disabled(plan.tasks.isEmpty)
         }
         .padding()
         .background(
@@ -224,6 +225,9 @@ struct ChildPlanCard: View {
                 .fill(AppColors.childCardBackground)
                 .shadow(color: .black.opacity(0.1), radius: 8, y: 4)
         )
+        .fullScreenCover(isPresented: $showExecution) {
+            PlanExecutionView(plan: plan)
+        }
     }
 }
 
