@@ -1,7 +1,10 @@
 import SwiftUI
+import SwiftData
 
 struct ContentView: View {
     @EnvironmentObject private var appState: AppState
+    @Environment(\.modelContext) private var modelContext
+    @Query private var settingsArray: [AppSettings]
 
     var body: some View {
         Group {
@@ -15,6 +18,17 @@ struct ContentView: View {
         }
         .sheet(isPresented: $appState.showPasswordPrompt) {
             PasswordPromptView()
+        }
+        .onAppear {
+            ensureSettingsExist()
+        }
+    }
+
+    private func ensureSettingsExist() {
+        if settingsArray.isEmpty {
+            let settings = AppSettings()
+            modelContext.insert(settings)
+            try? modelContext.save()
         }
     }
 }

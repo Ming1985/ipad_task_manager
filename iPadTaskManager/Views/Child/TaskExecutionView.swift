@@ -47,7 +47,7 @@ struct TaskExecutionView: View {
         VStack(spacing: 50) {
             Spacer()
 
-            // 任务信息
+            // 任务信息（固定高度，避免描述影响进度环位置）
             VStack(spacing: 12) {
                 Image(systemName: taskItem.isRestTask ? "gamecontroller.fill" : "book.fill")
                     .font(.system(size: 72))
@@ -57,13 +57,13 @@ struct TaskExecutionView: View {
                     .font(.system(size: 36, weight: .bold))
                     .multilineTextAlignment(.center)
 
-                if !taskItem.taskDescription.isEmpty {
-                    Text(taskItem.taskDescription)
-                        .font(.title3)
-                        .foregroundStyle(.secondary)
-                        .multilineTextAlignment(.center)
-                }
+                Text(taskItem.taskDescription)
+                    .font(.title3)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                    .opacity(taskItem.taskDescription.isEmpty ? 0 : 1)
             }
+            .frame(height: 180)
 
             // 进度环 + 倒计时
             ZStack {
@@ -148,7 +148,7 @@ struct TaskExecutionView: View {
 
                 // 暂停/继续按钮
                 Button {
-                    togglePause()
+                    isPaused.toggle()
                 } label: {
                     VStack(spacing: 12) {
                         Image(systemName: isPaused ? "play.circle.fill" : "pause.circle.fill")
@@ -166,12 +166,8 @@ struct TaskExecutionView: View {
         .padding(.horizontal, 40)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(AppColors.childBackground)
-        .onAppear {
-            startTimer()
-        }
-        .onDisappear {
-            stopTimer()
-        }
+        .onAppear(perform: startTimer)
+        .onDisappear(perform: stopTimer)
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)) { _ in
             handleBackgroundEntry()
         }
@@ -213,10 +209,6 @@ struct TaskExecutionView: View {
     private func stopTimer() {
         timer?.invalidate()
         timer = nil
-    }
-
-    private func togglePause() {
-        isPaused.toggle()
     }
 
     private func completeTask() {
@@ -316,9 +308,7 @@ struct PlanExecutionView: View {
             }
         }
         .interactiveDismissDisabled()  // 防止滑动关闭
-        .onAppear {
-            createSession()
-        }
+        .onAppear(perform: createSession)
     }
 
     private func createSession() {
@@ -334,6 +324,7 @@ struct PlanExecutionView: View {
         // 更新积分
         if let settings = settings {
             settings.currentPoints += points
+            try? modelContext.save()
         }
 
         // 检查是否还有下一个任务
@@ -345,6 +336,7 @@ struct PlanExecutionView: View {
             earnedPoints += plan.bonusPoints
             if let settings = settings {
                 settings.currentPoints += plan.bonusPoints
+                try? modelContext.save()
             }
             session?.complete(points: earnedPoints)
             isCompleted = true
