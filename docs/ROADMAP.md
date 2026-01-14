@@ -6,7 +6,7 @@
 
 ## Active Phase
 
-**Phase 03: 任务管理**
+**Phase 04: 孩子主界面**
 
 ## Phases
 
@@ -14,7 +14,7 @@
 |-------|------|------|------|
 | 01 | 基础架构 | infrastructure | ✅ completed |
 | 02 | 管理员认证 | ui | ✅ completed |
-| 03 | 任务管理 | ui | pending |
+| 03 | 任务管理 | ui | ✅ completed |
 | 04 | 孩子主界面 | ui | pending |
 | 05 | 任务执行 | ui | pending |
 | 06 | Screen Time 集成 | system-api | pending |
@@ -31,11 +31,11 @@
 ## 进度统计
 
 - 总 Phases: 15
-- 已完成: 2
+- 已完成: 3
 - 进行中: 0
-- 待开始: 13
+- 待开始: 12
 
 ---
 
-*更新时间: 2026-01-13*
+*更新时间: 2026-01-14*
 *PRD 来源: tasks/prd-ipad-task-manager.md*

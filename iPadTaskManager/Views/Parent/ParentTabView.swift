@@ -34,32 +34,28 @@ struct ParentTabView: View {
     }
 }
 
-// MARK: - 占位视图
+// MARK: - 任务管理视图
 
 struct ParentTaskManageView: View {
     var body: some View {
-        NavigationStack {
-            List {
-                Section("任务") {
-                    Text("暂无任务")
-                        .foregroundStyle(.secondary)
+        TabView {
+            // 任务列表
+            ParentTaskListView()
+                .tabItem {
+                    Label("任务", systemImage: "checklist")
                 }
-                Section("计划") {
-                    Text("暂无计划")
-                        .foregroundStyle(.secondary)
+
+            // 计划列表
+            ParentPlanListView()
+                .tabItem {
+                    Label("计划", systemImage: "calendar.badge.plus")
                 }
-            }
-            .navigationTitle("任务管理")
-            .toolbar {
-                ToolbarItem(placement: .primaryAction) {
-                    Menu {
-                        Button("新建任务", systemImage: "plus") { }
-                        Button("新建计划", systemImage: "calendar.badge.plus") { }
-                    } label: {
-                        Image(systemName: "plus")
-                    }
+
+            // 任务模板
+            ParentTemplateListView()
+                .tabItem {
+                    Label("模板", systemImage: "bookmark")
                 }
-            }
         }
     }
 }

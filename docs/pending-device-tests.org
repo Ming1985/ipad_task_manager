@@ -1,0 +1,110 @@
+#+TITLE: 真机测试待执行清单
+#+DATE: [2026-01-14 Tue]
+#+DESCRIPTION: 需要付费开发者账号和真机才能执行的测试
+
+* 概述
+
+这些测试需要：
+1. 付费 Apple Developer Program 账号（$99/年）
+2. iPad 真机
+3. FamilyControls 授权（需要家长控制权限）
+
+当前状态：已申请 Developer Program，等待审核通过。
+
+* Phase 03 真机测试
+
+** TODO FamilyControls 功能测试
+:PROPERTIES:
+:Phase: 03
+:Priority: HIGH
+:END:
+
+*** TODO App 选择器功能
+- FamilyActivityPicker 能否正常弹出
+- 选择 App 后能否正确保存 token
+- 编辑任务时能否恢复已选 App
+
+*** TODO App 图标显示
+- 使用 Label 显示 ApplicationToken 时图标是否正确
+- 多个 App 的图标排列
+
+** TODO Screen Time 授权流程
+:PROPERTIES:
+:Phase: 03
+:Priority: HIGH
+:END:
+
+- 首次请求授权的流程
+- 授权状态检查
+- 拒绝授权后的处理
+
+* Phase 06 真机测试（Screen Time 集成）
+
+** TODO FamilyControls 核心功能
+:PROPERTIES:
+:Phase: 06
+:Priority: HIGH
+:END:
+
+- App 屏蔽/解锁
+- 时间限制设置
+- DeviceActivity 监控
+
+* Phase 07 真机测试（任务跟踪）
+
+** TODO 后台运行
+:PROPERTIES:
+:Phase: 07
+:Priority: MEDIUM
+:END:
+
+- 后台计时精度
+- App 切换时的状态保持
+
+* Phase 11 真机测试（游戏时间奖励）
+
+** TODO 游戏时间控制
+:PROPERTIES:
+:Phase: 11
+:Priority: HIGH
+:END:
+
+- 解锁指定 App
+- 时间到期自动锁定
+- 延长时间功能
+
+* Phase 13 真机测试（通知系统）
+
+** TODO 本地通知
+:PROPERTIES:
+:Phase: 13
+:Priority: MEDIUM
+:END:
+
+- 通知权限请求
+- 通知触发时机
+- 通知点击响应
+
+* 恢复代码指南
+
+当 Developer Program 审核通过后，需要恢复以下文件中被注释的代码：
+
+** TaskEditView.swift
+
+搜索 "临时禁用" 注释，恢复以下内容：
+1. import FamilyControls
+2. @State private var selectedApps = FamilyActivitySelection()
+3. FamilyActivityPicker 按钮和 modifier
+4. selectedAppsCount 计算属性
+5. JSONEncoder().encode(selectedApps) 调用
+
+** 可能需要修改的其他文件
+
+- ParentTaskListView.swift（如果有 App 图标显示）
+- 未来的 Phase 中涉及 FamilyControls 的文件
+
+* 更新历史
+
+| 日期 | 操作 | 说明 |
+|------+------+------|
+| 2026-01-14 | 创建 | 整理 Phase 03 及后续需要真机测试的项目 |

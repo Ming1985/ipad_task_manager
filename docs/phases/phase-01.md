@@ -48,17 +48,17 @@
 - [x] Typecheck 通过
 
 ## 技术决策
-| 决策 | 原因 |
-|-----|------|
-| 使用 SwiftData 而非 Core Data | SwiftData 更现代，与 SwiftUI 集成更好 |
-| 目标版本改为 iOS 17.0 | SwiftData @Model 宏需要 iOS 17+ |
-| 使用 ObservableObject 而非 @Observable | 保持与现有代码一致性 |
-
+| 决策                                   | 原因                                  |
+|----------------------------------------|---------------------------------------|
+| 使用 SwiftData 而非 Core Data          | SwiftData 更现代，与 SwiftUI 集成更好 |
+| 目标版本改为 iOS 17.0                  | SwiftData @Model 宏需要 iOS 17+       |
+| 使用 ObservableObject 而非 @Observable | 保持与现有代码一致性                  |
+  
 ## 遇到的问题
-| 问题 | 解决方案 |
-|-----|---------|
-| @Observable 需要 iOS 17+ | 改用 ObservableObject + @Published |
-| SwiftData 需要 iOS 17+ | 将目标版本从 16.0 改为 17.0 |
+| 问题                        | 解决方案                                         |
+|-----------------------------|--------------------------------------------------|
+| @Observable 需要 iOS 17+    | 改用 ObservableObject + @Published               |
+| SwiftData 需要 iOS 17+      | 将目标版本从 16.0 改为 17.0                      |
 | 测试 target 缺少 Info.plist | 在 project.yml 添加 GENERATE_INFOPLIST_FILE: YES |
 
 ## 测试清单 (infrastructure)
