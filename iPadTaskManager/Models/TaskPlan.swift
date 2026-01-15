@@ -8,6 +8,8 @@ final class TaskPlan {
     var name: String
 
     /// 包含的任务列表（有序）
+    /// 注意：@Relationship 会自动去重，不支持重复任务
+    /// 使用 taskOrder 存储完整顺序（包括重复项）
     @Relationship(deleteRule: .nullify)
     var tasks: [TaskItem]
 
@@ -39,16 +41,16 @@ final class TaskPlan {
     /// 是否为固定时间模式
     var isFixedMode: Bool { mode == "fixed" }
 
-    /// 计算总时长（分钟），考虑时长覆盖
+    /// 计算总时长（分钟），考虑时长覆盖和重复任务
     var totalDurationMinutes: Int {
-        tasks.reduce(0) { total, task in
+        orderedTasks.reduce(0) { total, task in
             total + effectiveDuration(for: task)
         }
     }
 
     /// 计算总积分（包括额外奖励）
     var totalPoints: Int {
-        tasks.reduce(0) { $0 + $1.pointsReward } + bonusPoints
+        orderedTasks.reduce(0) { $0 + $1.pointsReward } + bonusPoints
     }
 
     /// 获取/设置任务顺序
@@ -79,6 +81,13 @@ final class TaskPlan {
             return override
         }
         return task.durationMinutes
+    }
+
+    /// 获取完整的任务顺序列表（包括重复，向后兼容空 taskOrder）
+    var orderedTasks: [TaskItem] {
+        let taskDict = Dictionary(uniqueKeysWithValues: tasks.map { ($0.taskId, $0) })
+        let ordered = taskOrder.compactMap { taskDict[$0] }
+        return ordered.isEmpty ? tasks : ordered
     }
 
     /// 设置任务在此计划中的时长覆盖

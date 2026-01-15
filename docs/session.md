@@ -2,13 +2,14 @@
 
 ## 当前进度
 
-**当前 Phase:** Phase 06 - Screen Time 集成
+**当前 Phase:** Phase 07 - 任务跟踪
 **状态:** pending
 
 ## 最近活动
 
 | 时间 | 操作 | 说明 |
 |------|------|------|
+| 2026-01-14 | Phase 06 完成 | Screen Time 集成：FamilyControls 授权、App 屏蔽/解锁、永久屏蔽列表、编译通过 |
 | 2026-01-14 | Phase 05 完成 | 任务执行：倒计时、进度环、暂停/继续、放弃、提前完成、计划序列执行、积分发放 |
 | 2026-01-14 | Phase 04 完成 | 孩子主界面：手动测试通过，拖拽排序修复、家长按钮位置修复、固定时间显示 |
 | 2026-01-14 | Phase 04 开发 | 孩子主界面：任务列表、计划卡片、积分显示、空状态，编译通过 |
@@ -39,10 +40,13 @@
 | 使用 SwiftUI Form | 原生体验，自动处理键盘、滚动 | 03 |
 | FamilyActivityPicker | 系统提供的 App 选择器，保证权限正确 | 03 |
 | 模板定义在 TaskItem.swift | 避免添加新文件到 Xcode 项目的复杂性 | 03 |
+| ScreenTimeManager 单例模式 | 保证屏蔽状态全局一致 | 06 |
 
 ### 待解决问题
-1. FamilyControls 授权流程需真机测试确认
-2. 横屏/竖屏支持待定
+1. **App 屏蔽白名单功能**：ManagedSettings API 只支持黑名单，白名单需 Phase 07 通过 DeviceActivityMonitor 实现
+2. **Safari 无法屏蔽**：系统限制，Safari 等系统 App 不受 FamilyControls 控制
+3. App 屏蔽遮罩自定义需 DeviceActivityMonitor extension
+4. 横屏/竖屏支持待定
 3. 截图 OCR 验证待定
 4. 紧急解锁模式待定
 5. 积分负数支持待定
@@ -67,23 +71,27 @@ iPadTaskManager/
 │   ├── AppUsageLog.swift
 │   └── AppSettings.swift
 ├── Services/
-│   └── KeychainService.swift
+│   ├── KeychainService.swift
+│   └── ScreenTimeManager.swift          # Phase 06 新增
 ├── Views/
 │   ├── Child/
-│   │   └── ChildTabView.swift
+│   │   ├── ChildTabView.swift
+│   │   └── TaskExecutionView.swift        # Phase 05 新增
 │   ├── Parent/
 │   │   ├── ParentTabView.swift
-│   │   ├── ParentTaskListView.swift     # Phase 03 新增
-│   │   ├── TaskEditView.swift           # Phase 03 新增
-│   │   ├── ParentPlanListView.swift     # Phase 03 新增
-│   │   └── PlanEditView.swift           # Phase 03 新增
+│   │   ├── ParentTaskListView.swift      # Phase 03 新增
+│   │   ├── TaskEditView.swift            # Phase 03 新增
+│   │   ├── ParentPlanListView.swift      # Phase 03 新增
+│   │   ├── PlanEditView.swift            # Phase 03 新增
+│   │   └── ScreenTimeSettingsView.swift  # Phase 06 新增
 │   └── Shared/
 │       ├── MainView.swift
 │       ├── SetupPasswordView.swift
 │       ├── PasswordPromptView.swift
 │       ├── PasswordResetView.swift
 │       ├── ChangePasswordView.swift
-│       └── PasswordComponents.swift
+│       ├── PasswordComponents.swift
+│       └── ScreenTimeAuthorizationView.swift  # Phase 06 新增
 ├── ViewModels/
 │   └── AppState.swift
 └── Utils/
@@ -92,14 +100,16 @@ iPadTaskManager/
 
 ## 下一步
 
-1. 开始 Phase 06 Screen Time 集成开发
-2. 或提交 Phase 05 完成的代码
+1. 开始 Phase 07 任务跟踪开发（DeviceActivity 监控）
+2. 或真机测试 Phase 06 功能
+3. 或提交 Phase 06 完成的代码
 
 ## 备注
 
-- FamilyControls 相关代码已临时注释，等待 Developer Program 审核通过后恢复
+- FamilyControls 代码已恢复，Developer Program 已就绪
 - 真机测试项目记录在 `docs/pending-device-tests.org`
+- ManagedSettings 白名单模式需真机测试优化
 
 ---
 
-*更新时间: 2026-01-14 17:30*
+*更新时间: 2026-01-14 20:00*

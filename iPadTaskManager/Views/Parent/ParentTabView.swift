@@ -98,6 +98,14 @@ struct ParentSettingsView: View {
     var body: some View {
         NavigationStack {
             List {
+                Section("功能") {
+                    NavigationLink {
+                        ScreenTimeSettingsView()
+                    } label: {
+                        Label("屏幕使用时间", systemImage: "hourglass")
+                    }
+                }
+
                 Section("账户") {
                     Button("修改密码") {
                         showChangePassword = true

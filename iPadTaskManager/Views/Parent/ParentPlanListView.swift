@@ -68,14 +68,14 @@ private struct PlanRowView: View {
 
                     HStack(spacing: 4) {
                         Image(systemName: "list.number")
-                        Text("\(plan.tasks.count) 个任务")
+                        Text("\(plan.orderedTasks.count) 个任务")
                     }
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                 }
 
                 HStack {
-                    Label("总时长 \(totalDuration) 分钟", systemImage: "clock")
+                    Label("总时长 \(plan.totalDurationMinutes) 分钟", systemImage: "clock")
                         .font(.caption)
                         .foregroundStyle(.blue)
 
@@ -92,10 +92,6 @@ private struct PlanRowView: View {
         .sheet(isPresented: $showEdit) {
             PlanEditView(plan: plan)
         }
-    }
-
-    private var totalDuration: Int {
-        plan.tasks.reduce(0) { $0 + $1.durationMinutes }
     }
 }
 

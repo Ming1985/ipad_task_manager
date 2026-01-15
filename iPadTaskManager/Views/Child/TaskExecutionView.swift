@@ -1,6 +1,7 @@
 import SwiftUI
 import SwiftData
 import UIKit
+import FamilyControls
 
 /// 任务执行视图
 struct TaskExecutionView: View {
@@ -14,6 +15,7 @@ struct TaskExecutionView: View {
     @State private var showAbandonAlert = false
     @State private var showCompleteEarlyAlert = false
     @State private var timer: Timer?
+    @StateObject private var screenTimeManager = ScreenTimeManager.shared
 
     // 后台处理
     @State private var backgroundDate: Date?
@@ -204,11 +206,23 @@ struct TaskExecutionView: View {
                 }
             }
         }
+
+        // 开始 App 屏蔽（仅学习任务）
+        if taskItem.taskType == "study", let appData = taskItem.allowedAppTokens {
+            do {
+                let allowedApps = try JSONDecoder().decode(FamilyActivitySelection.self, from: appData)
+                screenTimeManager.startTaskShielding(allowedApps: allowedApps)
+            } catch {
+                print("Failed to decode app selection: \(error)")
+            }
+        }
     }
 
     private func stopTimer() {
         timer?.invalidate()
         timer = nil
+        // 停止 App 屏蔽
+        screenTimeManager.stopTaskShielding()
     }
 
     private func completeTask() {
@@ -258,8 +272,8 @@ struct PlanExecutionView: View {
     private var settings: AppSettings? { settingsArray.first }
 
     private var currentTask: TaskItem? {
-        guard currentTaskIndex < plan.tasks.count else { return nil }
-        return plan.tasks[currentTaskIndex]
+        guard currentTaskIndex < plan.orderedTasks.count else { return nil }
+        return plan.orderedTasks[currentTaskIndex]
     }
 
     private var currentDuration: Int {
@@ -281,7 +295,7 @@ struct PlanExecutionView: View {
                     // 进度指示器
                     ProgressHeader(
                         current: currentTaskIndex + 1,
-                        total: plan.tasks.count,
+                        total: plan.orderedTasks.count,
                         planName: plan.name
                     )
 
@@ -328,7 +342,7 @@ struct PlanExecutionView: View {
         }
 
         // 检查是否还有下一个任务
-        if currentTaskIndex + 1 < plan.tasks.count {
+        if currentTaskIndex + 1 < plan.orderedTasks.count {
             currentTaskIndex += 1
             session?.planTaskIndex = currentTaskIndex
         } else {

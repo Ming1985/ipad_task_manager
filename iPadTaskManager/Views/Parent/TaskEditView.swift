@@ -1,11 +1,12 @@
 import SwiftUI
 import SwiftData
-// import FamilyControls  // 临时禁用：需要付费开发者账号
+import FamilyControls
 
 /// 任务编辑/创建视图
 struct TaskEditView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
+    @StateObject private var screenTimeManager = ScreenTimeManager.shared
 
     let existingTask: TaskItem?
     let templateToUse: TaskTemplate?
@@ -18,10 +19,10 @@ struct TaskEditView: View {
     @State private var requiresScreenshot = false
     @State private var taskType = "study"
     @State private var showAppPicker = false
-    // @State private var selectedApps = FamilyActivitySelection()  // 临时禁用
-    @State private var selectedAppCount = 0  // 临时替代：真机测试时恢复 FamilyActivitySelection
+    @State private var selectedApps = FamilyActivitySelection()
     @State private var showSaveAsTemplateAlert = false
     @State private var saveAsTemplate = false
+    @State private var showAuthorizationSheet = false
 
     init(task: TaskItem? = nil, template: TaskTemplate? = nil, customTemplate: TaskItem? = nil) {
         self.existingTask = task
@@ -61,25 +62,41 @@ struct TaskEditView: View {
                 }
 
                 Section("指定应用") {
-                    // 临时禁用：真机测试时恢复 FamilyActivityPicker
-                    Button {
-                        // showAppPicker = true  // 临时禁用
-                    } label: {
-                        HStack {
-                            Text("选择应用")
-                            Spacer()
-                            Text("需真机测试")
-                                .foregroundStyle(.secondary)
-                            Image(systemName: "chevron.right")
-                                .font(.caption)
-                                .foregroundStyle(.tertiary)
+                    if screenTimeManager.authorizationStatus == .approved {
+                        Button {
+                            showAppPicker = true
+                        } label: {
+                            HStack {
+                                Text("选择应用")
+                                Spacer()
+                                Text(selectedAppsCount)
+                                    .foregroundStyle(.secondary)
+                                Image(systemName: "chevron.right")
+                                    .font(.caption)
+                                    .foregroundStyle(.tertiary)
+                            }
                         }
-                    }
-                    .disabled(true)  // 临时禁用
 
-                    Text("App 选择功能需要真机和付费开发者账号")
-                        .font(.caption)
-                        .foregroundStyle(.orange)
+                        if !selectedApps.applicationTokens.isEmpty {
+                            Text("已选择 \(selectedApps.applicationTokens.count) 个应用")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    } else {
+                        Button {
+                            showAuthorizationSheet = true
+                        } label: {
+                            HStack {
+                                Image(systemName: "lock.shield")
+                                    .foregroundStyle(.orange)
+                                Text("需要授权「屏幕使用时间」")
+                            }
+                        }
+
+                        Text("授权后可在任务期间屏蔽其他 App")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
                 }
             }
             .navigationTitle(navigationTitle)
@@ -110,7 +127,10 @@ struct TaskEditView: View {
                     }
                 }
             }
-            // .familyActivityPicker(isPresented: $showAppPicker, selection: $selectedApps)  // 临时禁用
+            .familyActivityPicker(isPresented: $showAppPicker, selection: $selectedApps)
+            .sheet(isPresented: $showAuthorizationSheet) {
+                ScreenTimeAuthorizationView()
+            }
             .alert("保存为模板", isPresented: $showSaveAsTemplateAlert) {
                 Button("取消", role: .cancel) { }
                 Button("保存") {
@@ -126,11 +146,10 @@ struct TaskEditView: View {
         }
     }
 
-    // 临时禁用：真机测试时恢复
-    // private var selectedAppsCount: String {
-    //     let count = selectedApps.applicationTokens.count
-    //     return count == 0 ? "未选择" : "\(count) 个"
-    // }
+    private var selectedAppsCount: String {
+        let count = selectedApps.applicationTokens.count
+        return count == 0 ? "未选择" : "\(count) 个"
+    }
 
     private var navigationTitle: String {
         switch (existingTask, templateToUse, customTemplateToUse) {
@@ -150,8 +169,14 @@ struct TaskEditView: View {
             requiresScreenshot = task.requiresScreenshot
             taskType = task.taskType
 
-            // TODO: 从 task.allowedApps 恢复 selectedApps
-            // FamilyActivitySelection 无法直接从 Data 反序列化
+            // 从 task.allowedAppTokens 恢复 selectedApps
+            if let data = task.allowedAppTokens {
+                do {
+                    selectedApps = try JSONDecoder().decode(FamilyActivitySelection.self, from: data)
+                } catch {
+                    print("Failed to decode app selection: \(error)")
+                }
+            }
         }
         // 如果是从预设模板创建，加载模板数据
         else if let template = templateToUse {
@@ -171,6 +196,15 @@ struct TaskEditView: View {
             pointsReward = customTemplate.pointsReward
             requiresScreenshot = customTemplate.requiresScreenshot
             taskType = customTemplate.taskType
+
+            // 从模板恢复 App 选择
+            if let data = customTemplate.allowedAppTokens {
+                do {
+                    selectedApps = try JSONDecoder().decode(FamilyActivitySelection.self, from: data)
+                } catch {
+                    print("Failed to decode app selection: \(error)")
+                }
+            }
         }
     }
 
@@ -187,12 +221,12 @@ struct TaskEditView: View {
                 isTemplate: true
             )
 
-            // 临时禁用：真机测试时恢复 App tokens 保存
-            // do {
-            //     template.allowedAppTokens = try JSONEncoder().encode(selectedApps)
-            // } catch {
-            //     print("Failed to encode app selection: \(error)")
-            // }
+            // 保存 App tokens
+            do {
+                template.allowedAppTokens = try JSONEncoder().encode(selectedApps)
+            } catch {
+                print("Failed to encode app selection: \(error)")
+            }
 
             modelContext.insert(template)
             saveAsTemplate = false
@@ -218,12 +252,12 @@ struct TaskEditView: View {
         taskToSave.requiresScreenshot = requiresScreenshot
         taskToSave.taskType = taskType
 
-        // 临时禁用：真机测试时恢复 App tokens 保存
-        // do {
-        //     taskToSave.allowedAppTokens = try JSONEncoder().encode(selectedApps)
-        // } catch {
-        //     print("Failed to encode app selection: \(error)")
-        // }
+        // 保存 App tokens
+        do {
+            taskToSave.allowedAppTokens = try JSONEncoder().encode(selectedApps)
+        } catch {
+            print("Failed to encode app selection: \(error)")
+        }
 
         if existingTask == nil {
             modelContext.insert(taskToSave)

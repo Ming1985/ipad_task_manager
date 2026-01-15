@@ -173,7 +173,7 @@ struct PlanEditView: View {
         guard let plan = plan else { return }
 
         name = plan.name
-        selectedTasks = plan.tasks
+        selectedTasks = plan.orderedTasks
         bonusPoints = plan.bonusPoints
         mode = plan.mode
         durationOverrides = plan.taskDurationOverrides
@@ -190,18 +190,13 @@ struct PlanEditView: View {
         let planToSave = plan ?? TaskPlan(name: "", mode: mode)
 
         planToSave.name = name.trimmingCharacters(in: .whitespaces)
-        planToSave.tasks = selectedTasks
+        planToSave.tasks = Array(Set(selectedTasks))  // SwiftData Relationship 需要去重
+        planToSave.taskOrder = selectedTasks.map { $0.taskId }  // 完整顺序（含重复）
         planToSave.bonusPoints = bonusPoints
         planToSave.mode = mode
         planToSave.taskDurationOverrides = durationOverrides
-
-        if mode == "fixed" {
-            planToSave.availableStartTime = startTime
-            planToSave.availableEndTime = endTime
-        } else {
-            planToSave.availableStartTime = nil
-            planToSave.availableEndTime = nil
-        }
+        planToSave.availableStartTime = mode == "fixed" ? startTime : nil
+        planToSave.availableEndTime = mode == "fixed" ? endTime : nil
 
         if plan == nil {
             modelContext.insert(planToSave)

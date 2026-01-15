@@ -197,7 +197,7 @@ struct ChildPlanCard: View {
             Divider()
 
             // 任务列表
-            ForEach(plan.tasks) { task in
+            ForEach(plan.orderedTasks) { task in
                 ChildTaskRow(task: task, planDuration: plan.effectiveDuration(for: task))
             }
 
@@ -217,7 +217,7 @@ struct ChildPlanCard: View {
                 .foregroundStyle(.white)
                 .clipShape(RoundedRectangle(cornerRadius: 12))
             }
-            .disabled(plan.tasks.isEmpty)
+            .disabled(plan.orderedTasks.isEmpty)
         }
         .padding()
         .background(
